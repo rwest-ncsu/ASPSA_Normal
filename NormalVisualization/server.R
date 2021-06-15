@@ -23,22 +23,45 @@ shinyServer(function(input, output) {
                y = y())
   })
   
+  output$bValue = renderUI({
+    numericInput("upperBound",
+                 "Select an upper bound:",
+                 min=input$lowerBound,
+                 max=Inf,
+                 value=input$lowerBound + 0.5,
+                 step=0.1)
+  })
+  
   output$plot = renderPlot({
-    ggplot(test(), mapping = aes(x = x, y = y)) +
-      geom_line(color = "black") +
-      geom_area(data = filter(test(), abs(x) < 1),
-                fill = "#7BAFD4",
-                alpha = 0.5) + 
-      #Put the mean here for the max Y value
+    g = ggplot(test(), mapping = aes(x = x, y = y)) +
+      geom_line(color = "black") + 
       scale_y_continuous(limits = c(0, dnorm(input$mean, 
                                              mean=input$mean, 
                                              sd=input$sd))) +
-      theme_bw() +
-      theme(panel.grid = element_blank()) +
-      annotate("text",
-               x = 0.75 * max(test()$x),
-               y = 0.75 * max(test()$y),
-               label = "Area between 2 points \n under the curve \n on the X axis")
+      theme_bw()+
+      theme(panel.grid = element_blank())
+    
+    if(input$problemType=="X > a"){
+      g + geom_area(data = filter(test(), x > input$'x>a'),
+                 fill = "#7BAFD4",
+                 alpha = 0.5)+
+        annotate("text",
+                x = 0.75 * max(test()$x),
+                y = 0.75 * max(test()$y),
+                label = "Area to the right of selected point \n 
+                under the curve")
+    }
+    
+    if(input$problemType=="X < a"){
+      g + geom_area(data = filter(test(), x > input$'x>a'),
+                 fill = "#7BAFD4",
+                 alpha = 0.5)+
+        annotate("text",
+                x = 0.75 * max(test()$x),
+                y = 0.75 * max(test()$y),
+                label = "Area to the right of selected point \n 
+                under the curve")
+    }
   })
   
   output$TEST = renderText("Hello")
