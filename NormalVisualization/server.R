@@ -22,15 +22,18 @@ shinyServer(function(input, output) {
                y = y())
   })
   output$bValue = renderUI({
-    numericInput(
-      "upperBound",
-      "Select an upper bound:",
-      min = input$lowerBound,
-      max = Inf,
-      value = input$lowerBound + 0.5,
-      step = 0.1
-    )
+    numericInput("bValue", 
+                "Select an upper bound:",
+                min = input$lowerBound,
+                max=Inf,
+                value=1,
+                step=0.1)
   })
+  
+  observeEvent(input$lowerBound, {
+      updateNumericInput(inputId = "bValue", min=input$lowerBound)
+  })
+  
   
   g = reactive({
     ggplot(test(), mapping = aes(x = x, y = y)) +
@@ -61,14 +64,12 @@ shinyServer(function(input, output) {
         geom_area(
           data = filter(test(), x < input$'x<a'),
           fill = "#7BAFD4",
-          alpha = 0.5
-        ) +
+          alpha = 0.5) +
         annotate(
           "text",
           x = quantile(test()$x, 0.25),
           y = 0.75 * max(test()$y),
-          label = "Area to the left of a \n under the curve"
-        )
+          label = "Area to the left of a \n under the curve")
     }
     else if (input$problemType == "|X| < a") {
       g() + 
@@ -101,7 +102,7 @@ shinyServer(function(input, output) {
     else if(input$problemType == "a < X < b"){
       g() + 
         geom_area(
-          data=filter(test(), x>input$lowerBound), 
+          data=filter(test(), x>input$lowerBound & x<input$bValue), 
           fill = "#7BAFD4",
           alpha = 0.5) +
         annotate(

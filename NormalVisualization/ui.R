@@ -59,7 +59,7 @@ shinyUI(fluidPage(
                                     min=-Inf, 
                                     max=Inf, 
                                     value=0, 
-                                    step=0.1), 
+                                    step=0.1),
                        uiOutput("bValue")), 
       conditionalPanel(condition = "input.problemType == '|X| > a'",
                        numericInput("absOuter",
