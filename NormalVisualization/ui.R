@@ -37,7 +37,7 @@ shinyUI(fluidPage(
         "problemType",
         "Problem Type",
         choices = problemTypes,
-        selected = "X > a"
+        selected = "X < a"
       ), 
       conditionalPanel(condition = "input.problemType == 'X > a'",
                        numericInput("x>a", 
