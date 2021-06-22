@@ -6,8 +6,9 @@
 # Date: 6/15/2021
 
 library(shiny)
+library(shinydashboard)
 
-problemTypes = c("X < a", "X > a", "|X| < a", "|X| > a", "a < X < b")
+problemTypes = c("P{X < a}", "P{X > a}", "P{|X| < a}", "P{|X| > a}", "P{a < X < b}")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -37,23 +38,23 @@ shinyUI(fluidPage(
         "problemType",
         "Problem Type",
         choices = problemTypes,
-        selected = "X < a"
+        selected = "P{X < a}"
       ), 
-      conditionalPanel(condition = "input.problemType == 'X > a'",
+      conditionalPanel(condition = "input.problemType == 'P{X > a}'",
                        numericInput("x>a", 
                                     "Select a:", 
                                     min=-Inf,
                                     max=Inf,
                                     value=1,
                                     step=0.01)),
-      conditionalPanel(condition = "input.problemType == 'X < a'", 
+      conditionalPanel(condition = "input.problemType == 'P{X < a}'", 
                        numericInput("x<a", 
                                     "Select a:", 
                                     min=-Inf,
                                     max=Inf,
                                     value=1,
                                     step=0.01)), 
-      conditionalPanel(condition = "input.problemType == 'a < X < b'", 
+      conditionalPanel(condition = "input.problemType == 'P{a < X < b}'", 
                        numericInput("lowerBound", 
                                     "Select a lower bound:", 
                                     min=-Inf, 
@@ -61,14 +62,14 @@ shinyUI(fluidPage(
                                     value=0, 
                                     step=0.1),
                        uiOutput("bValue")), 
-      conditionalPanel(condition = "input.problemType == '|X| > a'",
+      conditionalPanel(condition = "input.problemType == 'P{|X| > a}'",
                        numericInput("absOuter",
                                     "Select a:",
                                     min=0, 
                                     max=Inf,
                                     value=1,
                                     step=0.1)), 
-      conditionalPanel(condition = "input.problemType == '|X| < a'", 
+      conditionalPanel(condition = "input.problemType == 'P{|X| < a}'", 
                        numericInput("absInner",
                                     "Select a:",
                                     min=0, 
@@ -78,7 +79,12 @@ shinyUI(fluidPage(
     ),
     
     # Show a plot of the generated distribution
-    mainPanel(plotOutput("plot"),
-              textOutput("TEST"))
+    mainPanel(
+      plotOutput("plot"),
+              box(
+                width=12,
+                title="Probability = ",
+                textOutput("prob"))
+      )
   )
 ))
