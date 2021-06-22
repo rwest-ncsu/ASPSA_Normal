@@ -35,6 +35,7 @@ shinyServer(function(input, output) {
   #Only allow user to select lower bound for minimum of upper bound
   observeEvent(input$lowerBound, {
       updateNumericInput(inputId = "bValue", min=input$lowerBound)
+      updateNumericInput(inputId = "lowerBound", max=input$bValue)
   })
   
   #Create the base plot
