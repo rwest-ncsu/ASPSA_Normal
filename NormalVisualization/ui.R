@@ -8,12 +8,16 @@
 library(shiny)
 library(shinydashboard)
 
-problemTypes = c("P{X < a}", "P{X > a}", "P{|X| < a}", "P{|X| > a}", "P{a < X < b}")
+problemTypes = c("P{X < a}", 
+                 "P{X > a}", 
+                 "P{|X| < a}", 
+                 "P{|X| > a}", 
+                 "P{a < X < b}")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   # Application title
-  titlePanel("Visualize area under a normal Distribution"),
+  titlePanel("Visualize area under a Normal Distribution"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
@@ -55,13 +59,20 @@ shinyUI(fluidPage(
                                     value=1,
                                     step=0.01)), 
       conditionalPanel(condition = "input.problemType == 'P{a < X < b}'", 
-                       numericInput("lowerBound", 
-                                    "Select a lower bound:", 
-                                    min=-Inf, 
-                                    max=Inf, 
-                                    value=0, 
+                       numericInput("lowerBound",
+                                    "Select a lower bound:",
+                                    min=-Inf,
+                                    max=Inf,
+                                    value=0,
                                     step=0.1),
-                       uiOutput("bValue")), 
+                       numericInput("bValue", 
+                                    "Select an upper bound:",
+                                    min = -Inf,
+                                    max=Inf,
+                                    value=1,
+                                    step=0.1)),
+                       # uiOutput("lowerBound"),
+                       # uiOutput("bValue")), 
       conditionalPanel(condition = "input.problemType == 'P{|X| > a}'",
                        numericInput("absOuter",
                                     "Select a:",

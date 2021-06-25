@@ -22,20 +22,12 @@ shinyServer(function(input, output) {
                y = y())
   })
   
-  #Condition the upper bound on the lower bound
-  output$bValue = renderUI({
-    numericInput("bValue", 
-                "Select an upper bound:",
-                min = input$lowerBound,
-                max=Inf,
-                value=1,
-                step=0.1)
-  })
-  
   #Only allow user to select lower bound for minimum of upper bound
-  observeEvent(input$lowerBound, {
-      updateNumericInput(inputId = "bValue", min=input$lowerBound)
-      updateNumericInput(inputId = "lowerBound", max=input$bValue)
+  observeEvent((input$lowerBound >= input$bValue), {
+      updateNumericInput(inputId = "bValue",
+                         min=input$lowerBound)
+      updateNumericInput(inputId = "lowerBound",
+                         max=input$bValue)
   })
   
   #Create the base plot
@@ -47,8 +39,17 @@ shinyServer(function(input, output) {
         mean = input$mean,
         sd = input$sd))) +
       theme_bw() +
-      theme(panel.grid = element_blank())+
-      scale_x_continuous(n.breaks = 10)
+      scale_x_continuous(n.breaks = 10)+
+      theme(axis.line = element_line(size = 0.5, linetype = "solid"), 
+            axis.ticks = element_line(linetype = "dashed"),
+            panel.grid.major = element_line(colour = "gray99",
+                                            size = 1.3, 
+                                            linetype = "dotted"),
+            axis.title = element_text(size = 13),
+            axis.text = element_text(size = 10, face = "italic"),
+            panel.background = element_rect(colour = "antiquewhite"),
+            panel.grid = element_blank()) +
+      labs(y = "Density")
   })
   
   #Add layers conditioned on user input
@@ -90,7 +91,7 @@ shinyServer(function(input, output) {
           size=6,
           x = quantile(df()$x, 0.75),
           y = 0.75 * max(df()$y),
-          label = "Area between the values -a and a \n under the curve")
+          label = "Area between -a and a \n under the curve")
     }
     else if(input$problemType == "P{|X| > a}") {
       g() + 
@@ -127,14 +128,13 @@ shinyServer(function(input, output) {
   probability = reactive({
     if(input$problemType=="P{X < a}"){
       pnorm(input$'x<a', mean=input$mean, sd=input$sd)
-    } else if(input$problemType=="P{X > a"){
+    } else if(input$problemType=="P{X > a}"){
       pnorm(input$'x>a', mean=input$mean, sd=input$sd, lower.tail = F)
     } else if(input$problemType=="P{|X| < a}"){
       pnorm(input$absInner, mean=input$mean, sd=input$sd)-
       pnorm(-input$absInner, mean=input$mean, sd=input$sd)
     } else if(input$problemType=="P{|X| > a}"){
-      pnorm(input$absOuter, mean=input$mean, sd=input$sd, lower.tail = F)+
-      pnorm(-input$absOuter, mean=input$mean, sd=input$sd)
+      2*pnorm(-input$absOuter, mean=input$mean, sd=input$sd)
     } else {
       pnorm(input$bValue, mean=input$mean, sd=input$sd) - 
       pnorm(input$lowerBound, mean=input$mean, sd=input$sd)

@@ -19,18 +19,25 @@ a=-1.5
 b=2
 
 myData = data.frame(x=x, y=y)
+filtData = filter(myData, x>a)
 
-g = ggplot(NULL, mapping=aes(x=x, y=y))+
-  geom_area(data=filter(myData, x > a & x < b), fill="#7BAFD4", alpha=0.5)+ #Go Heels
+ggplot(NULL, mapping=aes(x=x, y=y))+
+  geom_area(data=filtData, fill="#7BAFD4", alpha=0.5)+ #Go Heels
   #Put the mean here for the max Y value
   scale_y_continuous(limits=c(0, dnorm(0)))+
-  theme_bw()
-
-g + 
+  theme_bw()+ 
   geom_line(color="black")+
   theme(panel.grid = element_blank())+
   annotate("text", x=0.75*max(x), y=0.75*max(y), label="text goes here")+
-  scale_x_continuous(n.breaks = 10)
+  scale_x_continuous(n.breaks = 10) + 
+  theme(axis.line = element_line(size = 0.5, linetype = "solid"), 
+        axis.ticks = element_line(linetype = "dashed"),
+        panel.grid.major = element_line(colour = "gray99",
+        size = 1.3, linetype = "dotted"),
+        axis.title = element_text(size = 13),
+        axis.text = element_text(size = 10, face = "italic"),
+        panel.background = element_rect(colour = "antiquewhite"))+
+  labs(y = "Density")
 
 
 
