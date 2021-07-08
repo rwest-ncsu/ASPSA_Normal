@@ -8,4 +8,4 @@ if Shiny is not already downloaded, `install.package("shiny")`
 
 Load the library: `library(shiny)`
 
-`shiny::runGitHub(repo="rwest-ncsu/Final", subdir = "Final")`
+`shiny::runGitHub(repo="rwest-ncsu/ASPSA_Normal", subdir="NormalVisualization")`
